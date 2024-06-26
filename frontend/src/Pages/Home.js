@@ -29,7 +29,7 @@ const Home = () => {
     <Container maxW="xl" centerContent >
       <Box
         display="flex"
-        justifyCOntent="center"
+        justifyContent="center"
         p={3}
         bg="#004777"
         w="100%"
@@ -38,7 +38,7 @@ const Home = () => {
         borderWidth="1px"
         color="white"
       >
-         <Text display="flex" textAlign="center" fontSize="4xl" fontFamily="Work sans">
+        <Text display="flex" textAlign="center" fontSize="4xl" fontFamily="Work sans">
           Chatify
         </Text>
       </Box>
@@ -49,17 +49,17 @@ const Home = () => {
             <Tab color="white">Sign Up</Tab>
           </TabList>
           <TabPanels>
-            <TabPanel> 
-              <Login /> 
-             </TabPanel>
-            <TabPanel>  
+            <TabPanel>
+              <Login />
+            </TabPanel>
+            <TabPanel>
               <Signup />
             </TabPanel>
-          </TabPanels> 
-        </Tabs> 
+          </TabPanels>
+        </Tabs>
       </Box>
     </Container>
-    
+
   )
 }
 

@@ -13,8 +13,10 @@ import animationData from "../animations/typing.json";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
+import Lottie from "lottie-react"
 const ENDPOINT = "http://localhost:5000";
-var socket, selectedChatCompare;
+let socket = null
+let selectedChatCompare = null;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -25,14 +27,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
 
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
@@ -88,7 +82,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           config
         );
         socket.emit("new message", data);
-        setMessages([...messages, data]);
+        setMessages(prevMessages => [...prevMessages, data]);
       } catch (error) {
         toast({
           title: "Error Occured!",
@@ -105,10 +99,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
+    socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
     socket.on("stop typing", () => setIsTyping(false));
 
+    return () => {
+      socket.disconnect(); // Clean up socket connection on component unmount
+    };
     // eslint-disable-next-line
   }, []);
 
@@ -131,8 +128,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         }
       } else {
         setMessages([...messages, newMessageRecieved]);
+        console.log(messages)
+        console.log(newMessageRecieved)
       }
     });
+    return () => {
+      socket.off("message received"); // Clean up socket listeners
+    };
   });
 
   const typingHandler = (e) => {
@@ -228,12 +230,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             >
               {istyping ? (
                 <div >
-                  {/* <Lottie
-                    options={defaultOptions}
-                    // height={50}
-                    width={70}
-                    style={{ marginBottom: 15, marginLeft: 0 }}
-                  /> */}
+                  <Lottie
+                    animationData={animationData}
+                    loop={true}
+                    autoplay={true}
+                    style={{ marginBottom: 10, marginLeft: 0, width: 72, height: 30 }}
+                    rendererSettings={{ preserveAspectRatio: "xMidYMid slice" }}
+                  />
                 </div>
               ) : (
                 <></>
@@ -250,7 +253,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </Box>
         </>
       ) : (
-        
+
         <Box display="flex" alignItems="center" justifyContent="center" h="100%">
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Select Chat

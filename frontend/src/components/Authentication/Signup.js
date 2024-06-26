@@ -7,8 +7,10 @@ import { FormControl, FormLabel } from '@chakra-ui/form-control'
 import { useToast } from "@chakra-ui/toast";
 import { useHistory } from "react-router";
 import axios from "axios";
+import { ChatState } from "../../Context/ChatProvider";
 
 const Signup = () => {
+  const { setUser} = ChatState();
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const [name, setName] = useState();
@@ -33,7 +35,7 @@ const Signup = () => {
       });
       return;
     }
-    console.log(pics);
+    // console.log(pics);
     if (pics.type === "image/jpeg" || pics.type === "image/png") {
       const data = new FormData();
       data.append("file", pics);
@@ -46,7 +48,7 @@ const Signup = () => {
         .then((res) => res.json())
         .then((data) => {
           setPic(data.url.toString());
-          console.log(data.url.toString());
+          // console.log(data.url.toString());
           setPicLoading(false);
         })
         .catch((err) => {
@@ -91,7 +93,7 @@ const Signup = () => {
       setPicLoading(false);
       return;
     }
-    console.log(name, email, password, pic);
+    // console.log(name, email, password, pic);
     try {
       const config = {
         headers: {
@@ -108,7 +110,7 @@ const Signup = () => {
         },
         config
       );
-      console.log(data);
+      // console.log(data);
       toast({
         title: "Registration Successful",
         status: "success",
@@ -119,6 +121,8 @@ const Signup = () => {
       localStorage.setItem("userInfo", JSON.stringify(data));
       setPicLoading(false);
       history.push("/chats");
+      setUser(data)
+      // window.location.reload();
     } catch (error) {
       toast({
         title: "Error Occured!",

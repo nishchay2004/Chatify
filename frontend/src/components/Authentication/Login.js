@@ -1,28 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { Input, InputGroup, InputRightElement } from "@chakra-ui/input";
 import { VStack } from "@chakra-ui/layout";
-import { useState } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
+import { ChatState } from "../../Context/ChatProvider";
 
 
 const Login = () => {
+  const { setUser} = ChatState();
   const [show, setShow] = useState(false);
-  const handleClick = () => setShow(!show);
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const toast = useToast();
+
+  const handleClick = () => setShow(!show);
 
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
       toast({
-        title: "Please Fill all the Feilds",
+        title: "Please fill all the fields",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -52,14 +54,16 @@ const Login = () => {
         isClosable: true,
         position: "bottom",
       });
-      
+
       localStorage.setItem("userInfo", JSON.stringify(data));
       setLoading(false);
       history.push("/chats");
+      setUser(data)
+      // window.location.reload();
     } catch (error) {
       toast({
-        title: "Error Occured!",
-        description: error.response.data.message,
+        title: "Error Occurred!",
+        description: error.response?.data?.message || "Something went wrong",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -67,6 +71,11 @@ const Login = () => {
       });
       setLoading(false);
     }
+  };
+
+  const setGuestCredentials = () => {
+    setEmail("guest@example.com");
+    setPassword("123456");
   };
 
   return (
@@ -109,15 +118,12 @@ const Login = () => {
         variant="solid"
         colorScheme="red"
         width="100%"
-        onClick={() => {
-          setEmail("guest@example.com");
-          setPassword("123456");
-        }}
+        onClick={setGuestCredentials}
       >
         Get Guest User Credentials
       </Button>
     </VStack>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

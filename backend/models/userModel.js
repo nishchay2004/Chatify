@@ -9,7 +9,7 @@ const userSchema = mongoose.Schema(
         pic: {
             type: String,
             default:
-                "https://www.google.com/url?sa=i&url=https%3A%2F%2Fpixabay.com%2Fvectors%2Fblank-profile-picture-mystery-man-973460%2F&psig=AOvVaw0evPp42bJh1_TQkiDu9_so&ust=1695408518222000&source=images&cd=vfe&opi=89978449&ved=0CBAQjRxqFwoTCMiWqpCvvIEDFQAAAAAdAAAAABAD"
+                "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg"
         }
 
     },

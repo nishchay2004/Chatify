@@ -52,8 +52,10 @@ function SideDrawer() {
   const history = useHistory();
 
   const logoutHandler = () => {
-    history.push("/");
+    // setUser(null);
     localStorage.removeItem("userInfo");
+    history.push('/');
+    window.location.reload();
   };
 
   const handleSearch = async () => {
@@ -81,7 +83,7 @@ function SideDrawer() {
 
       setLoading(false);
       setSearchResult(data);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -95,7 +97,7 @@ function SideDrawer() {
   };
 
   const accessChat = async (userId) => {
-    console.log(userId);
+    // console.log(userId);
 
     try {
       setLoadingChat(true);
@@ -156,14 +158,16 @@ function SideDrawer() {
               />
               <ChatIcon fontSize="2xl" m={1} />
             </MenuButton>
-            <MenuList pl={2}>
+            <MenuList pl={2} color="black">
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
                 <MenuItem
                   key={notif._id}
                   onClick={() => {
                     setSelectedChat(notif.chat);
-                    setNotification(notification.filter((n) => n !== notif));
+                    setNotification(prevNotifications => (
+                      prevNotifications.filter(n => n.chat._id !== notif.chat._id)
+                    ));
                   }}
                 >
                   {notif.chat.isGroupChat
